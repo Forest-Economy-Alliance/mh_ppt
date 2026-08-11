@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reimagining Forests — BIPP · ISB IoFE Maharashtra Engagement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/theme/black.min.css" />
+
+<style>
+  :root {
+    --brand-dark:     #ffffff;
+    --brand-mid:      #EEF2F8;
+    --brand-accent:   #4E72D6;
+    --brand-accent2:  #E8A838;
+    --brand-muted:    #7A90B8;
+    --brand-line:     rgba(25, 40, 144, 0.2);
+    --ink:            #192890;
+    --font-display:   'Playfair Display', serif;
+    --font-body:      'Inter', sans-serif;
+    --header-h:       76px;
+  }
+
+  html, body { height:100%; }
+  body { background: #ffffff; }
+  .reveal { font-family: var(--font-body); background: var(--brand-dark); }
+  .reveal .slides { text-align: left; }
+  /* Give the active section a definite height so .pane's height:100% (and its
+     flex:1 children) actually resolve and stretch to fill it — without this,
+     section height is content-driven and everything sits condensed at the top. */
+  .reveal .slides section { height:100%; }
+  .reveal h1, .reveal h2, .reveal h3 { font-family: var(--font-display); color: var(--ink); text-transform: none; letter-spacing: -0.02em; }
+
+  /* ── SHARED LAYOUT ──
+     .pane fills the full slide (which itself now fills the full viewport height below
+     the fixed header, see #g-header / Reveal width:height:'100%' in the script). */
+  .pane { padding: calc(var(--header-h) + 2.4vh) 6vw 3.2vh; height:100%; box-sizing:border-box; display:flex; flex-direction:column; }
+
+  /* ── GLOBAL FIXED HEADER — a real fixed-position bar, always 100vw, slides fade/slide in ── */
+  #g-header { position:fixed; top:0; left:0; width:100%; height:var(--header-h); z-index:99999; display:flex; align-items:center; justify-content:space-between; background:#ffffff; border-bottom:2.5px solid var(--brand-accent); box-sizing:border-box; padding:0 6vw; pointer-events:none; opacity:0; visibility:hidden; transform:translateY(-10px); transition:opacity .35s ease, transform .35s ease, visibility 0s linear .35s; }
+  #g-header.show { opacity:1; visibility:visible; transform:translateY(0); transition:opacity .35s ease, transform .35s ease; }
+  #g-header-left { display:flex; align-items:center; gap:14px; min-width:0; flex:1; padding-right:1rem; }
+  .g-logo-ph { display:flex; align-items:center; justify-content:center; border:1.5px dashed #b9c6e6; border-radius:6px; background:#f6f8fc; color:#8a97b8; font-family:var(--font-display); font-weight:700; letter-spacing:0.04em; white-space:nowrap; }
+  #g-header-iofe-logo { height:36px; padding:0 10px; font-size:0.62rem; flex-shrink:0; }
+  #g-header-bipp-logo { height:34px; padding:0 10px; font-size:0.62rem; flex-shrink:0; }
+  #g-header-title { font-family:var(--font-display); font-size:clamp(0.58rem, 1.15vw, 0.78rem); font-weight:700; letter-spacing:0.04em; color:var(--ink); line-height:1.2; min-width:0; }
+
+  /* ── IMAGE PLACEHOLDER ── */
+  .img-ph { border:2px dashed #b9c6e6; border-radius:10px; background:repeating-linear-gradient(45deg, #f6f8fc, #f6f8fc 10px, #edf1fa 10px, #edf1fa 20px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.3rem; color:#8a97b8; text-align:center; padding:0.6rem; }
+  .img-ph-label { font-family:var(--font-display); font-size:0.68rem; font-weight:700; color:#3a4a86; }
+  .img-ph-sub { font-size:0.55rem; color:#9aa7c8; }
+
+  /* ── INTRO SLIDE (Slide 0) ── */
+  @keyframes iSlideLeft { from { transform:translateX(-32px); opacity:0; } to { transform:translateX(0); opacity:1; } }
+  @keyframes iFadeUp    { from { transform:translateY(22px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+  @keyframes iZoom      { from { transform:scale(1.07); } to { transform:scale(1); } }
+
+  .intro-wrap { width:100%; height:100%; display:grid; grid-template-columns:2fr 3fr; overflow:hidden; padding:0 0 0 4vw; box-sizing:border-box; }
+
+  /* left column */
+  .intro-left { display:flex; flex-direction:column; overflow:hidden; }
+  .intro-left-top { flex:1; min-height:0; padding:36px 6% 24px; background:#ffffff; display:flex; flex-direction:column; overflow:hidden; }
+  .intro-left-bottom { padding:30px 6%; background:#0e2145; border-top:3px solid #2dd4bf; flex-shrink:0; }
+
+  .intro-bipp-logo { height:44px; object-fit:contain; object-position:left; margin-bottom:24px; opacity:0; }
+  .intro-divider { width:40px; height:3px; background:var(--brand-accent); border-radius:2px; margin-bottom:20px; opacity:0; }
+  /* higher specificity than .reveal h1 (0-1-1) to override 2.5em theme default */
+  .reveal h1.intro-left-title { font-family:var(--font-display); font-size:36px; font-weight:700; color:#0e2145; line-height:1.25; margin:0; opacity:0; }
+
+  .intro-left-bottom { padding:20px 6%; background:#ffffff; border-top:2px solid rgba(14,33,69,0.12); flex-shrink:0; display:flex; align-items:center; gap:14px; }
+  .intro-footer-iofe { height:44px; object-fit:contain; object-position:left; flex-shrink:0; opacity:0; }
+  .intro-footer-sep { width:1px; height:28px; background:rgba(14,33,69,0.15); flex-shrink:0; }
+  .intro-footer-text { flex:1; }
+  .intro-iofe-label { font-family:var(--font-body); font-size:0.72rem; font-weight:700; color:var(--ink); letter-spacing:0.01em; margin-bottom:3px; opacity:0; }
+  .intro-institution { font-size:0.62rem; font-weight:400; color:#6b7280; opacity:0; }
+  .intro-footer-bipp { height:38px; object-fit:contain; object-position:right; flex-shrink:0; opacity:0; }
+
+  /* right column */
+  .intro-right { position:relative; overflow:hidden; }
+  .intro-right-img { width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
+  .intro-right-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(10,22,70,0.93) 0%, rgba(10,22,70,0.6) 38%, rgba(10,22,70,0.12) 65%, transparent 80%); }
+  .intro-right-content { position:absolute; bottom:0; left:0; right:0; padding:5vh 7%; }
+  .intro-right-headline { font-family:var(--font-display); font-size:clamp(1.05rem,1.9vw,1.4rem); font-weight:700; color:#ffffff; line-height:1.3; margin-bottom:1.8vh; opacity:0; }
+  .intro-stat { display:flex; align-items:flex-start; gap:0.7rem; margin-bottom:1.1vh; font-size:0.72rem; color:rgba(255,255,255,0.88); line-height:1.45; opacity:0; }
+  .intro-stat::before { content:''; flex-shrink:0; width:6px; height:6px; border-radius:50%; background:#2dd4bf; margin-top:0.38em; }
+  .intro-stat em { font-style:normal; color:#2dd4bf; text-decoration:underline; text-underline-offset:3px; font-weight:600; }
+
+  /* entrance animations — triggered when slide is present */
+  .present .intro-right-img      { animation: iZoom 1.6s ease forwards; }
+  .present .intro-bipp-logo      { animation: iFadeUp 0.55s 0.1s ease both; }
+  .present .intro-divider        { animation: iFadeUp 0.4s 0.22s ease both; }
+  .present h1.intro-left-title   { animation: iFadeUp 0.65s 0.3s ease both; }
+  .present .intro-footer-iofe    { animation: iFadeUp 0.5s  0.45s ease both; }
+  .present .intro-iofe-label     { animation: iFadeUp 0.45s 0.5s  ease both; }
+  .present .intro-institution    { animation: iFadeUp 0.4s  0.55s ease both; }
+  .present .intro-footer-bipp    { animation: iFadeUp 0.5s  0.5s  ease both; }
+  .present .intro-right-headline { animation: iFadeUp 0.65s 0.5s ease both; }
+  .present .intro-stat:nth-child(2) { animation: iFadeUp 0.55s 0.65s ease both; }
+  .present .intro-stat:nth-child(3) { animation: iFadeUp 0.55s 0.78s ease both; }
+
+  /* ── GENERIC SLIDE ENTRANCE ── .animate-in is (re)applied by script on every slide
+     change so content gently rises/fades in each time a slide becomes current. */
+  @keyframes paneRise { from { transform:translateY(18px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+  .pane > * { opacity:0; }
+  .pane.animate-in > * { animation: paneRise 0.6s cubic-bezier(.16,.84,.44,1) both; }
+  .pane.animate-in > *:nth-child(1) { animation-delay:.02s; }
+  .pane.animate-in > *:nth-child(2) { animation-delay:.09s; }
+  .pane.animate-in > *:nth-child(3) { animation-delay:.16s; }
+  .pane.animate-in > *:nth-child(4) { animation-delay:.23s; }
+  .pane.animate-in > *:nth-child(5) { animation-delay:.30s; }
+
+  /* ── OPPORTUNITY (Slide 1) ── */
+  @keyframes oppIn {
+    from { opacity:0; transform:translateY(14px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  @keyframes oppFlow {
+    0%   { stroke-dashoffset: 24; opacity:.35; }
+    50%  { opacity:1; }
+    100% { stroke-dashoffset: 0; opacity:.35; }
+  }
+
+  .reveal h2.opp-title {
+    font-size:1.62rem; font-weight:800; color:var(--ink); line-height:1.2;
+    margin:0 0 0.35rem; flex-shrink:0;
+  }
+  .opp-lead {
+    font-size:0.9rem; color:#4b5568; line-height:1.45; max-width:52rem;
+    margin:0 0 1rem; flex-shrink:0;
+  }
+  .opp-diagram {
+    flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:0.55rem;
+  }
+  .opp-section-label {
+    display:flex; align-items:center; gap:0.55rem;
+    font-size:0.72rem; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#8a97b8;
+    margin-bottom:0.4rem;
+  }
+  .opp-section-label::after {
+    content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--brand-line), transparent);
+  }
+
+  /* Outcomes */
+  .opp-outcomes-row { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+  .opp-outcome {
+    display:flex; align-items:center; gap:0.75rem;
+    background:linear-gradient(135deg, #d8faf3 0%, #b8f0e4 100%);
+    border:1px solid rgba(45,212,191,0.35);
+    border-radius:14px; padding:0.75rem 0.95rem;
+    box-shadow:0 6px 18px rgba(14,33,69,0.06);
+    transition: transform .25s ease, box-shadow .25s ease;
+    cursor:default;
+  }
+  .opp-outcome:hover { transform:translateY(-3px); box-shadow:0 12px 24px rgba(14,33,69,0.12); }
+  .opp-outcome-icon {
+    width:2.4rem; height:2.4rem; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:#0e2145; color:#7de8d4; font-size:1.12rem; font-weight:700;
+  }
+  .opp-outcome b { font-family:var(--font-display); font-size:1.08rem; font-weight:700; color:#0e2145; display:block; line-height:1.2; }
+  .opp-outcome span { font-size:0.8rem; color:#1f3a5f; line-height:1.35; }
+
+  /* Connector between layers */
+  .opp-connector {
+    display:flex; justify-content:center; align-items:center; height:1.1rem; flex-shrink:0;
+  }
+  .opp-connector svg { width:28px; height:18px; overflow:visible; }
+  .opp-connector path {
+    fill:none; stroke:#1a3a8a; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:6 4;
+  }
+  .present .opp-connector path { animation: oppFlow 1.6s ease-in-out infinite; }
+
+  /* Building blocks */
+  .opp-blocks-row { display:grid; grid-template-columns:repeat(4,1fr); gap:0.7rem; }
+  .opp-block-card {
+    position:relative; overflow:hidden;
+    background:linear-gradient(165deg, #4a72d4 0%, #2f54b8 55%, #2748a3 100%);
+    border-radius:14px; padding:0.9rem 0.85rem 0.85rem;
+    min-height:8.4rem; display:flex; flex-direction:column; gap:0.2rem;
+    box-shadow:0 8px 20px rgba(30,64,160,0.18);
+    border:1px solid rgba(255,255,255,0.12);
+    transition: transform .28s cubic-bezier(.16,.84,.44,1), box-shadow .28s ease, background .28s ease;
+    cursor:default;
+  }
+  .opp-block-card::before {
+    content:''; position:absolute; inset:0 auto auto 0; width:100%; height:3px;
+    background:linear-gradient(90deg, #7de8d4, rgba(125,232,212,0.15));
+    opacity:0; transition:opacity .25s ease;
+  }
+  .opp-block-card:hover {
+    transform:translateY(-6px) scale(1.015);
+    box-shadow:0 16px 30px rgba(30,64,160,0.28);
+    background:linear-gradient(165deg, #5a82e0 0%, #355cc4 55%, #2c50b0 100%);
+  }
+  .opp-block-card:hover::before { opacity:1; }
+  .opp-block-num {
+    font-family:var(--font-display); font-size:1.62rem; font-weight:800;
+    color:rgba(255,255,255,0.28); line-height:1; letter-spacing:-0.02em;
+  }
+  .opp-block-card b {
+    font-family:var(--font-display); font-size:0.92rem; font-weight:700; color:#fff;
+    display:block; line-height:1.25; margin:0;
+  }
+  .opp-block-card span {
+    font-size:0.78rem; color:rgba(255,255,255,0.88); line-height:1.4; margin-top:0.15rem;
+  }
+
+  /* Foundation */
+  .opp-foundation-bar {
+    display:flex; align-items:center; gap:1rem;
+    background:linear-gradient(90deg, #0a1836 0%, #0e2145 45%, #16326a 100%);
+    border-radius:14px; padding:0.85rem 1.15rem;
+    border:1px solid rgba(125,232,212,0.22);
+    box-shadow:0 10px 24px rgba(10,24,54,0.18);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .opp-foundation-bar:hover { transform:translateY(-2px); box-shadow:0 14px 28px rgba(10,24,54,0.24); }
+  .opp-foundation-badge {
+    flex-shrink:0; font-size:0.66rem; font-weight:800; letter-spacing:0.14em; text-transform:uppercase;
+    color:#0e2145; background:#7de8d4; border-radius:999px; padding:0.35rem 0.65rem;
+  }
+  .opp-foundation-text { min-width:0; }
+  .opp-foundation-bar b {
+    font-family:var(--font-display); font-size:1rem; font-weight:700; color:#fff;
+    display:block; margin-bottom:0.15rem;
+  }
+  .opp-foundation-bar span { font-size:0.8rem; color:rgba(255,255,255,0.82); line-height:1.35; }
+
+  .opp-footnote {
+    font-size:0.8rem; color:#8a97b8; font-style:italic; text-align:left;
+    flex-shrink:0; margin-top:0.55rem; padding-top:0.45rem;
+    border-top:1px solid var(--brand-line);
+  }
+
+  /* Staggered entrance when slide is current */
+  .present .opp-lead,
+  .present .opp-layer,
+  .present .opp-connector,
+  .present .opp-footnote { animation: oppIn 0.55s cubic-bezier(.16,.84,.44,1) both; }
+  .present .opp-lead { animation-delay:.05s; }
+  .present .opp-layer-outcomes { animation-delay:.12s; }
+  .present .opp-connector-1 { animation-delay:.2s; }
+  .present .opp-layer-blocks { animation-delay:.28s; }
+  .present .opp-connector-2 { animation-delay:.36s; }
+  .present .opp-layer-foundation { animation-delay:.44s; }
+  .present .opp-footnote { animation-delay:.52s; }
+  .present .opp-block-card { animation: oppIn 0.5s cubic-bezier(.16,.84,.44,1) both; }
+  .present .opp-block-card:nth-child(1) { animation-delay:.32s; }
+  .present .opp-block-card:nth-child(2) { animation-delay:.38s; }
+  .present .opp-block-card:nth-child(3) { animation-delay:.44s; }
+  .present .opp-block-card:nth-child(4) { animation-delay:.5s; }
+
+  /* ── WOMEN AT THE CENTER (Slide 3) ── */
+  .women-title { font-size:1.55rem; font-weight:800; margin-bottom:0.7rem; color:var(--ink); }
+  .women-grid { display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:1rem; flex:1; min-height:0; }
+  .women-photo {
+    width:100%; height:100%; min-height:0; object-fit:cover; object-position:center;
+    border-radius:12px; display:block;
+    box-shadow:0 10px 24px rgba(14,33,69,0.12);
+  }
+  .women-photo-side { flex:1; min-height:0; }
+  .women-stats { display:grid; grid-template-columns:1fr 1fr; gap:0.65rem; }
+  .women-stat { background:var(--brand-mid); border-radius:8px; padding:0.55rem 0.75rem; }
+  .women-stat-tag { font-size:0.62rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--brand-accent); }
+  .women-stat-val { font-family:var(--font-display); font-size:1.28rem; font-weight:800; color:var(--ink); margin:0.15rem 0; }
+  .women-stat-label { font-size:0.7rem; color:#374151; line-height:1.35; }
+  .women-blurb { font-size:0.78rem; color:#374151; line-height:1.5; margin-top:0; }
+  .women-enterprises { display:flex; align-items:baseline; gap:0.5rem; margin-top:0.6rem; }
+  .women-enterprises b { font-family:var(--font-display); font-size:1.9rem; color:var(--ink); }
+  .women-enterprises span { font-size:0.74rem; color:#374151; }
+  .women-agm { font-size:0.7rem; color:var(--brand-accent); margin-top:0.35rem; font-weight:600; }
+
+  /* ── EVIDENCE & HIGHLIGHTS / INFLUENCE (Slides 4–5) ── */
+  .ev-title { font-size:1.55rem; font-weight:800; color:var(--ink); }
+  .ev-sub { font-size:0.92rem; color:var(--brand-accent); font-style:italic; margin-bottom:0.7rem; }
+  .ev-thesis { font-size:0.88rem; color:#374151; line-height:1.5; max-width:720px; margin-bottom:0.9rem; }
+  .ev-body { display:grid; grid-template-columns:1fr 1.3fr; gap:1.1rem; flex:1; align-items:stretch; min-height:0; }
+  .ev-mou { display:flex; flex-direction:column; align-items:center; background:var(--brand-mid); border-radius:12px; padding:1.1rem; }
+  .ev-mou-num { font-family:var(--font-display); font-size:2.55rem; font-weight:800; color:var(--ink); }
+  .ev-mou-cap { font-size:0.78rem; color:#374151; margin-bottom:0.7rem; }
+  .ev-row { display:flex; justify-content:space-between; width:100%; font-size:0.78rem; color:#374151; padding:0.22rem 0; border-bottom:1px solid var(--brand-line); }
+  .ev-row b { color:var(--ink); }
+  .ev-logos {
+    display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;
+    min-height:0; height:100%;
+  }
+  .ev-logo-card {
+    background:#fff; border:1px solid var(--brand-line); border-radius:12px;
+    padding:0; margin:0; min-height:0; overflow:hidden; position:relative;
+    box-shadow:0 6px 16px rgba(14,33,69,0.06);
+  }
+  /* Override Reveal theme defaults (.reveal section img { margin/border/background }) */
+  .reveal .ev-logo-card img {
+    position:absolute; top:0; left:0; right:0; bottom:0;
+    width:100% !important; height:100% !important; max-width:none !important; max-height:none !important;
+    margin:0 !important; padding:0 !important; border:0 !important; background:none !important;
+    box-shadow:none !important; border-radius:0;
+    object-fit:cover; object-position:center top; display:block;
+  }
+
+  /* Influence lower block: pillars sit with photos at bottom; gap kept from thesis above */
+  .pane:has(.inf-lower) .ev-thesis { margin-bottom:0; }
+  .inf-lower {
+    margin-top:auto; flex:0 0 auto; width:100%;
+    display:flex; flex-direction:column; gap:3.2rem;
+  }
+  .inf-pillars { display:grid; grid-template-columns:repeat(3,1fr); gap:0.85rem; margin:0; flex-shrink:0; }
+  .inf-pillar { background:var(--brand-mid); border-top:3px solid var(--brand-accent); border-radius:0 0 8px 8px; padding:0.85rem 1rem; }
+  .inf-pillar b { display:block; font-family:var(--font-display); font-size:0.95rem; color:var(--ink); margin-bottom:0.3rem; }
+  .inf-pillar span { font-size:0.78rem; color:#374151; line-height:1.45; }
+  /* Compact landscape photo strip (matches reference gallery row) */
+  .inf-photos {
+    margin-top:0; flex:0 0 auto; width:100%;
+    display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:0.55rem;
+    height:clamp(148px, 26vh, 210px);
+  }
+  .inf-photo {
+    min-width:0; height:100%; overflow:hidden; border-radius:10px;
+    border:1px solid rgba(25,40,144,0.14); background:#eef2f8;
+    box-shadow:0 4px 14px rgba(14,33,69,0.08);
+  }
+  .reveal .inf-photo img {
+    width:100% !important; height:100% !important; max-width:none !important; max-height:none !important;
+    margin:0 !important; padding:0 !important; border:0 !important; background:none !important;
+    box-shadow:none !important; border-radius:0; display:block;
+    object-fit:cover; object-position:center;
+  }
+
+  /* ── JOURNEY (Slide 6) ── */
+  @keyframes journeyIn {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .journey-eyebrow {
+    font-family:var(--font-body); font-size:0.72rem; font-weight:700;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--brand-accent); margin-bottom:0.4rem;
+  }
+  .journey-title {
+    font-size:1.55rem; font-weight:800; margin-bottom:0.35rem; max-width:720px; color:var(--ink);
+  }
+  .journey-lead {
+    font-size:0.88rem; color:#4b5568; line-height:1.45; margin:0 0 1.1rem; max-width:46rem;
+  }
+  .journey-row {
+    flex:1; min-height:0; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:1.1rem; align-items:stretch; position:relative;
+  }
+  .journey-row::before {
+    content:''; position:absolute; left:8%; right:8%; top:1.55rem; height:2px;
+    background:linear-gradient(90deg, rgba(78,114,214,0.15), rgba(78,114,214,0.55), rgba(78,114,214,0.15));
+    z-index:0; pointer-events:none;
+  }
+  .journey-item {
+    position:relative; z-index:1; min-height:0;
+    display:flex; flex-direction:column; gap:0.65rem;
+    background:linear-gradient(180deg, #ffffff 0%, #f5f8fd 100%);
+    border:1px solid rgba(25,40,144,0.12); border-radius:16px;
+    padding:1.15rem 1.15rem 1.2rem;
+    box-shadow:0 10px 24px rgba(14,33,69,0.07);
+    transition: transform .28s cubic-bezier(.16,.84,.44,1), box-shadow .28s ease, border-color .28s ease;
+    cursor:default;
+  }
+  .journey-item:hover {
+    transform:translateY(-6px);
+    box-shadow:0 18px 34px rgba(14,33,69,0.14);
+    border-color:rgba(78,114,214,0.35);
+  }
+  .journey-item:focus-within {
+    outline:2px solid rgba(78,114,214,0.35); outline-offset:2px;
+  }
+  .journey-step {
+    display:flex; align-items:center; gap:0.65rem; margin-bottom:0.15rem;
+  }
+  .journey-num {
+    width:2.15rem; height:2.15rem; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-body); font-size:0.85rem; font-weight:800;
+    color:#fff; background:linear-gradient(145deg, #4E72D6, #2f54b8);
+    box-shadow:0 6px 14px rgba(47,84,184,0.28);
+  }
+  .journey-label {
+    font-family:var(--font-body); font-size:0.95rem; font-weight:700;
+    letter-spacing:0.02em; color:var(--ink); line-height:1.2; margin:0;
+  }
+  .journey-theme {
+    font-family:var(--font-body); font-size:0.88rem; font-weight:700; color:var(--brand-accent);
+    letter-spacing:0.01em; margin:0 0 0.15rem;
+  }
+  /* Kill default/Reveal list bullets so only one marker shows */
+  .reveal .journey-points,
+  .reveal .journey-points li {
+    list-style:none !important; list-style-type:none !important;
+  }
+  .journey-points { display:flex; flex-direction:column; gap:0.65rem; margin:0; padding:0; }
+  .journey-points li {
+    position:relative; padding-left:1rem;
+    font-family:var(--font-body); font-size:0.8rem; color:#374151; line-height:1.5;
+  }
+  .journey-points li::marker { content:none; }
+  .journey-points li::before {
+    content:''; position:absolute; left:0; top:0.55em;
+    width:7px; height:7px; border-radius:50%; background:#7de8d4;
+  }
+  .present .journey-lead { animation: journeyIn 0.5s cubic-bezier(.16,.84,.44,1) both; animation-delay:.05s; }
+  .present .journey-item { animation: journeyIn 0.55s cubic-bezier(.16,.84,.44,1) both; }
+  .present .journey-item:nth-child(1) { animation-delay:.12s; }
+  .present .journey-item:nth-child(2) { animation-delay:.22s; }
+  .present .journey-item:nth-child(3) { animation-delay:.32s; }
+
+  /* ── BAMBOO MODEL (Slide 7) ── */
+  @keyframes modelIn {
+    from { opacity:0; }
+    to   { opacity:1; }
+  }
+  .model-eyebrow {
+    font-family:var(--font-body); font-size:0.72rem; font-weight:700;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--brand-accent2); margin-bottom:0.3rem;
+    flex-shrink:0;
+  }
+  .model-title { font-size:1.55rem; font-weight:800; margin-bottom:0.3rem; color:var(--ink); flex-shrink:0; }
+  .model-lead {
+    font-size:0.84rem; color:#4b5568; line-height:1.4; margin:0 0 0.65rem; max-width:42rem; flex-shrink:0;
+  }
+  .model-grid {
+    display:grid; grid-template-columns:1.15fr 0.95fr; gap:1.1rem;
+    flex:1; min-height:0; align-items:stretch;
+  }
+  .model-copy {
+    min-height:0; height:100%;
+    display:flex; flex-direction:column; gap:0.45rem;
+  }
+  .model-kicker {
+    font-family:var(--font-body); font-size:0.84rem; font-weight:700; color:var(--ink);
+    line-height:1.3; margin:0; flex-shrink:0;
+  }
+  .model-steps {
+    display:flex; flex-direction:column; gap:0.38rem;
+    flex:0 0 auto; /* size to content — avoids cards spilling over anchors */
+  }
+  .model-step {
+    display:grid; grid-template-columns:auto 1fr; gap:0.6rem; align-items:start;
+    background:linear-gradient(180deg, #ffffff 0%, #f5f8fd 100%);
+    border:1px solid rgba(25,40,144,0.12); border-radius:12px;
+    padding:0.5rem 0.7rem; cursor:default; flex:0 0 auto;
+    box-shadow:0 6px 14px rgba(14,33,69,0.05);
+    transition: box-shadow .25s ease, border-color .25s ease, background .25s ease;
+  }
+  .model-step:hover,
+  .model-step:focus-within {
+    border-color:rgba(78,114,214,0.4);
+    box-shadow:0 10px 22px rgba(14,33,69,0.12);
+    background:linear-gradient(180deg, #ffffff 0%, #eef4ff 100%);
+  }
+  .model-step-num {
+    width:1.85rem; height:1.85rem; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-body); font-size:0.74rem; font-weight:800; color:#fff;
+    background:linear-gradient(145deg, #4E72D6, #2f54b8);
+    box-shadow:0 4px 10px rgba(47,84,184,0.25);
+  }
+  .model-step-body { min-width:0; }
+  .model-step-title {
+    font-family:var(--font-body); font-size:0.84rem; font-weight:700;
+    color:var(--ink); letter-spacing:0.01em; margin:0 0 0.12rem; line-height:1.2;
+  }
+  .model-step-text {
+    font-size:0.72rem; color:#374151; line-height:1.35; margin:0;
+  }
+  .model-conclusion {
+    display:inline-flex; align-items:center; gap:0.4rem; width:fit-content; max-width:100%;
+    font-size:0.72rem; color:#0e2145; font-weight:700; margin:0; flex-shrink:0;
+    background:linear-gradient(135deg, #d8faf3 0%, #b8f0e4 100%);
+    border:1px solid rgba(45,212,191,0.35); border-radius:999px;
+    padding:0.28rem 0.65rem; white-space:nowrap;
+  }
+  .model-conclusion::before {
+    content:''; width:6px; height:6px; border-radius:50%; background:#0e2145; flex-shrink:0;
+  }
+  .model-anchors-wrap {
+    margin-top:auto; padding-top:0.25rem; flex-shrink:0;
+  }
+  .model-anchors-label {
+    font-family:var(--font-body); font-size:0.7rem; color:var(--brand-muted);
+    font-weight:700; letter-spacing:0.01em; margin:0 0 0.35rem;
+  }
+  .model-anchors {
+    display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:0.4rem;
+  }
+  .model-anchor-card {
+    background:#fff; border:1px solid var(--brand-line); border-radius:10px;
+    padding:0.25rem; margin:0; overflow:hidden; position:relative;
+    height:52px; box-shadow:0 4px 12px rgba(14,33,69,0.05);
+    transition: box-shadow .22s ease, border-color .22s ease;
+  }
+  .model-anchor-card:hover {
+    border-color:rgba(78,114,214,0.3);
+    box-shadow:0 8px 16px rgba(14,33,69,0.1);
+  }
+  .reveal .model-anchor-card img {
+    position:absolute; inset:0.3rem;
+    width:calc(100% - 0.6rem) !important; height:calc(100% - 0.6rem) !important;
+    max-width:none !important; max-height:none !important;
+    margin:0 !important; padding:0 !important; border:0 !important; background:none !important;
+    box-shadow:none !important; border-radius:0; display:block;
+    object-fit:contain; object-position:center;
+  }
+  .model-hero {
+    position:relative; width:100%; height:100%; min-height:0; border-radius:16px; overflow:hidden;
+    box-shadow:0 14px 30px rgba(14,33,69,0.14); background:#eef2f8;
+  }
+  .reveal .model-hero img {
+    width:100% !important; height:100% !important; max-width:none !important; max-height:none !important;
+    margin:0 !important; padding:0 !important; border:0 !important; background:none !important;
+    box-shadow:none !important; border-radius:0; display:block;
+    object-fit:cover; object-position:center;
+    transition: transform 0.7s ease;
+  }
+  .model-hero:hover img { transform:scale(1.04); }
+  .model-hero-caption {
+    position:absolute; left:0; right:0; bottom:0;
+    padding:1.1rem 1rem 0.95rem;
+    background:linear-gradient(to top, rgba(10,22,70,0.88) 0%, rgba(10,22,70,0.45) 65%, transparent 100%);
+    color:#fff;
+  }
+  .model-hero-caption b {
+    display:block; font-family:var(--font-body); font-size:0.88rem; font-weight:700; margin-bottom:0.15rem;
+  }
+  .model-hero-caption span {
+    display:block; font-size:0.74rem; line-height:1.4; color:rgba(255,255,255,0.88);
+  }
+  .present .model-lead,
+  .present .model-kicker,
+  .present .model-step,
+  .present .model-conclusion,
+  .present .model-anchors-wrap,
+  .present .model-hero { animation: modelIn 0.55s cubic-bezier(.16,.84,.44,1) both; }
+  .present .model-lead { animation-delay:.05s; }
+  .present .model-kicker { animation-delay:.1s; }
+  .present .model-step:nth-child(1) { animation-delay:.16s; }
+  .present .model-step:nth-child(2) { animation-delay:.22s; }
+  .present .model-step:nth-child(3) { animation-delay:.28s; }
+  .present .model-conclusion { animation-delay:.34s; }
+  .present .model-anchors-wrap { animation-delay:.4s; }
+  .present .model-hero { animation-delay:.18s; }
+
+  /* ── FULL BLEED IMAGE (Slide 8) ── */
+  .full-bleed {
+    padding: var(--header-h) 0 0;
+    overflow: hidden;
+    background: #0b1228;
+  }
+  .full-bleed-media {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+    margin: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    border: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+  }
+
+  /* ── LINK / DASHBOARD SLIDE (Slide 9) — no global header ── */
+  .dash-embed {
+    padding: 0;
+    overflow: hidden;
+    background: #f4f6fb;
+  }
+  .dash-iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    margin: 0;
+    background: #fff;
+  }
+
+  /* ── CLOSING (Slide 10) — no global header; full-height split ── */
+  .closing-pane {
+    padding: 0;
+    background: #ffffff;
+    overflow: hidden;
+  }
+  .closing-layout {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(220px, 0.7fr);
+    background: #ffffff;
+  }
+  .closing-panel {
+    min-width: 0;
+    min-height: 0;
+    background: #192890;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1.6rem, 3.5vh, 2.6rem) clamp(1.8rem, 4vw, 3.4rem);
+    box-sizing: border-box;
+  }
+  /* Higher specificity than .reveal h2 so title stays pure white */
+  .reveal .closing-panel h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 4.4vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: #ffffff !important;
+    margin: 0 0 1.15rem;
+    text-shadow: none;
+  }
+  .closing-photo {
+    width: 100%;
+    height: clamp(200px, 36vh, 320px);
+    border-radius: 0;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+    margin: 0 0 1.15rem;
+  }
+  .reveal .closing-photo img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+  }
+  .closing-panel p {
+    font-family: var(--font-body);
+    font-size: clamp(0.98rem, 1.35vw, 1.18rem);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.94);
+    line-height: 1.5;
+    max-width: 38rem;
+    margin: 0 0 1.25rem;
+  }
+  .closing-panel .footer-line {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.2vw, 1.08rem);
+    color: #ffffff;
+    font-weight: 700;
+    margin: 0;
+  }
+  .closing-panel .footer-line span {
+    font-weight: 500;
+    opacity: 0.92;
+  }
+  .closing-side {
+    min-width: 0;
+    min-height: 0;
+    background: #ffffff;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0 clamp(1.4rem, 3vw, 2.6rem) clamp(1.6rem, 3.5vh, 2.6rem) 0;
+    box-sizing: border-box;
+  }
+  .reveal .closing-side-logo {
+    width: clamp(110px, 12vw, 150px) !important;
+    height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    display: block;
+    object-fit: contain;
+  }
+  /* Closing slide: hide left/back control so it does not sit under the logo */
+  .reveal.hide-back-control .controls .navigate-left {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     GLOBAL FIXED HEADER — IoFE logo + title (left), BIPP logo (right)
+     Both logos are placeholders — swap the .g-logo-ph boxes for <img> tags.
+══════════════════════════════════════════════ -->
+<div id="g-header">
+  <div id="g-header-left">
+    <img src="media/iofe_logo.png" id="g-header-iofe-logo" alt="IoFE" style="object-fit:contain; display:block;" />
+    <span id="g-header-title"></span>
+  </div>
+  <img src="media/bipp.png" id="g-header-bipp-logo" alt="BIPP · ISB" style="object-fit:contain; display:block; margin-right:4px;" />
+</div>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- ══════════════════════════════════════════════
+     0 · INTRO
+══════════════════════════════════════════════ -->
+<section>
+  <div class="intro-wrap">
+
+    <!-- left panel -->
+    <div class="intro-left">
+      <div class="intro-left-top">
+        <img src="media/isb.png" class="intro-bipp-logo" alt="ISB" />
+        <div class="intro-divider"></div>
+        <h1 class="intro-left-title">Reimagining Forests: From Spaces&nbsp;of Poverty to Spaces&nbsp;of&nbsp;Production</h1>
+      </div>
+      <div class="intro-left-bottom">
+          <img src="media/iofe_logo.png" class="intro-footer-iofe" style="padding-bottom:10px" alt="IoFE" />
+          <div class="intro-footer-sep"></div>
+          <div class="intro-footer-text">
+            <div class="intro-iofe-label" style="font-size: 13px; width:80%;">Initiative on the Forest Economy</div>
+            <!-- <div class="intro-institution">Bharti Institute of Public Policy, ISB</div> -->
+          </div>
+          <!-- swap src to ISB standalone logo when file is provided -->
+          <img src="media/bipp.png" style="padding-bottom:5px"  class="intro-footer-bipp" alt="BIPP · ISB" />
+        </div>
+    </div>
+
+    <!-- right panel -->
+    <div class="intro-right">
+      <img src="intro/image.png" class="intro-right-img" alt="" />
+      <div class="intro-right-overlay"></div>
+      <div class="intro-right-content">
+        <div class="intro-right-headline">A systems change initiative for India’s forest economy</div>
+        <div class="intro-stat"><span><em>~149 million tonnes of CO₂ sequestered annually</em> by India’s forests — the carbon sink our model helps communities protect</span></div>
+        <div class="intro-stat"><span>200M+ forest-dependent people in India</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     1 · OPPORTUNITY
+══════════════════════════════════════════════ -->
+<section data-header="Opportunity: Introducing IoFE">
+  <div class="pane">
+    <h2 class="opp-title">Opportunity: Introducing Initiative on the Forest Economy</h2>
+    <p class="opp-lead">A stacked systems model — secure tenure at the base, four building blocks in the middle, dual outcomes at the top.</p>
+
+    <div class="opp-diagram">
+      <div class="opp-layer opp-layer-outcomes">
+        <div class="opp-section-label">Outcomes</div>
+        <div class="opp-outcomes-row">
+          <div class="opp-outcome" tabindex="0">
+            <div class="opp-outcome-icon" aria-hidden="true">♀</div>
+            <div>
+              <b>Women's Empowerment</b>
+              <span>as business owners &amp; economic decision-makers</span>
+            </div>
+          </div>
+          <div class="opp-outcome" tabindex="0">
+            <div class="opp-outcome-icon" aria-hidden="true">🌲</div>
+            <div>
+              <b>Sustainable Forest Governance</b>
+              <span>Biodiversity conservation + climate action</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="opp-connector opp-connector-1" aria-hidden="true">
+        <svg viewBox="0 0 28 18"><path d="M14 2v10M8 8l6 6 6-6"/></svg>
+      </div>
+
+      <div class="opp-layer opp-layer-blocks">
+        <div class="opp-section-label">Four Building Blocks</div>
+        <div class="opp-blocks-row">
+          <div class="opp-block-card" tabindex="0">
+            <div class="opp-block-num">01</div>
+            <b>Building the Business Ecosystem</b>
+            <span>Aggregation economies through women-owned Producer Companies</span>
+          </div>
+          <div class="opp-block-card" tabindex="0">
+            <div class="opp-block-num">02</div>
+            <b>Cultivating Women's Leadership</b>
+            <span>Enterprise leaders through legal training, capacity building &amp; peer networks</span>
+          </div>
+          <div class="opp-block-card" tabindex="0">
+            <div class="opp-block-num">03</div>
+            <b>Leveraging Technology</b>
+            <span>GIS boundary mapping, blockchain traceability &amp; mechanisation</span>
+          </div>
+          <div class="opp-block-card" tabindex="0">
+            <div class="opp-block-num">04</div>
+            <b>Multi-Stakeholder Partnership</b>
+            <span>Aligning government, civil society, private sector &amp; academic actors</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="opp-connector opp-connector-2" aria-hidden="true">
+        <svg viewBox="0 0 28 18"><path d="M14 2v10M8 8l6 6 6-6"/></svg>
+      </div>
+
+      <div class="opp-layer opp-layer-foundation">
+        <div class="opp-section-label">Foundation</div>
+        <div class="opp-foundation-bar" tabindex="0">
+          <div class="opp-foundation-badge">FRA 2006</div>
+          <div class="opp-foundation-text">
+            <b>Securing Land Tenure</b>
+            <span>Operationalising FRA 2006 · Informal labourers → rights-holders with collective action</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="opp-footnote">Anchored in secure tenure, the building blocks work synergistically to generate dual outcomes.</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     3 · WOMEN AT THE CENTER
+══════════════════════════════════════════════ -->
+<section data-header="Women at the Center">
+  <div class="pane">
+    <div class="women-title">Women at the Center</div>
+    <div class="women-grid">
+      <img src="media/tribal_women.png" class="women-photo" alt="Tribal women" />
+      <div>
+        <div class="women-stats">
+          <div class="women-stat"><div class="women-stat-tag">India's first</div><div class="women-stat-val">&gt;10,000</div><div class="women-stat-label">Women shareholders across Producer Companies</div></div>
+          <div class="women-stat"><div class="women-stat-tag">Leadership Training</div><div class="women-stat-val">893</div><div class="women-stat-label">Women trained as enterprise leaders</div></div>
+          <div class="women-stat"><div class="women-stat-tag">Market-linked</div><div class="women-stat-val">3,684</div><div class="women-stat-label">Women collectors engaged directly in market transactions through PC across 406 villages</div></div>
+          <div class="women-stat"><div class="women-stat-tag">Women in Leadership</div><div class="women-stat-val">Board · Promoter</div><div class="women-stat-label">Board Directors · Promoters · Shareholders of Producer Companies</div></div>
+        </div>
+        <div class="women-enterprises"><b>39</b><span>Enterprises — Women-owned Producer Companies established</span></div>
+        <div class="women-agm">AGM Participation: ~2,610 participants across 5 states</div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:0.65rem; min-height:0;">
+        <div class="women-blurb">Tribal women in India's most climate-vulnerable forest districts are the primary collectors, processors and custodians of forest produce — IoFE moves them from labour to ownership.</div>
+        <img src="media/women_leaders.png" class="women-photo women-photo-side" alt="Women leaders" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     4 · EVIDENCE & HIGHLIGHTS
+══════════════════════════════════════════════ -->
+<section data-header="Evidence &amp; Highlights">
+  <div class="pane">
+    <div class="ev-title">Evidence &amp; Highlights</div>
+    <div class="ev-sub">Building Multi-Stakeholder Partnership</div>
+    <div class="ev-thesis">Formalising existing forest value chains through multi-stakeholder partnerships — local communities as custodians of forest resources, industry as buyers of seasonal forest products, and government agencies facilitating and regulating wealth creation locally, for a robust and sustainable forest economy.</div>
+    <div class="ev-body">
+      <div class="ev-mou">
+        <div class="ev-mou-num">58</div>
+        <div class="ev-mou-cap">Partner organizations</div>
+        <div class="ev-row"><span>Government &amp; linked bodies</span><b>26</b></div>
+        <div class="ev-row"><span>Academic &amp; technical</span><b>16</b></div>
+        <div class="ev-row"><span>Corporate</span><b>7</b></div>
+        <div class="ev-row"><span>Civil society</span><b>7</b></div>
+        <div class="ev-row" style="border-bottom:none;"><span>Banking &amp; financial</span><b>2</b></div>
+      </div>
+      <div class="ev-logos">
+        <div class="ev-logo-card"><img src="media/partener1.png" alt="Partner organization 1" /></div>
+        <div class="ev-logo-card"><img src="media/partener2.png" alt="Partner organization 2" /></div>
+        <div class="ev-logo-card"><img src="media/partener3.png" alt="Partner organization 3" /></div>
+        <div class="ev-logo-card"><img src="media/partener4.png" alt="Partner organization 4" /></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     5 · INFLUENCE & EVIDENCE
+══════════════════════════════════════════════ -->
+<section data-header="Influence &amp; Evidence">
+  <div class="pane">
+    <div class="ev-title">Influence &amp; Evidence</div>
+    <div class="ev-sub">Policy Convening &amp; Knowledge Dissemination</div>
+    <div class="ev-thesis">Shaping bamboo policy, convening the sector around shared priorities, and putting the evidence into the public domain.</div>
+    <div class="inf-lower">
+      <div class="inf-pillars">
+        <div class="inf-pillar"><b>Policy</b><span>AP Bamboo Policy inputs; state and national working groups</span></div>
+        <div class="inf-pillar"><b>Convening</b><span>National Bamboo Roundtable; state-level roundtables</span></div>
+        <div class="inf-pillar"><b>Knowledge Dissemination</b><span>Research papers, sector reports and the Bark Vision publication</span></div>
+      </div>
+      <div class="inf-photos" aria-label="Influence and evidence photo strip">
+        <div class="inf-photo"><img src="media/logo1.png" alt="Sunrise in Pangi publication" /></div>
+        <div class="inf-photo"><img src="media/logo2.png" alt="Report launch with partners" /></div>
+        <div class="inf-photo"><img src="media/logo3.png" alt="Policy convening roundtable" /></div>
+        <div class="inf-photo"><img src="media/logo4.png" alt="Save the Earth Conclave" /></div>
+        <div class="inf-photo"><img src="media/logo5.png" alt="BarkVisionAI dataset" /></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     6 · MAHARASHTRA ENGAGEMENT JOURNEY
+══════════════════════════════════════════════ -->
+<section data-header="Maharashtra Engagement Journey">
+  <div class="pane">
+    <div class="journey-eyebrow">Maharashtra | Engagement Journey</div>
+    <div class="journey-title">Six engagements, one forest-economy pathway</div>
+    <p class="journey-lead">From community capability to public platforms and model demonstration — a connected pathway for Maharashtra’s forest economy.</p>
+    <div class="journey-row">
+      <article class="journey-item" tabindex="0">
+        <div class="journey-step">
+          <div class="journey-num">01</div>
+          <div class="journey-label">Foundation</div>
+        </div>
+        <div class="journey-theme">Community capability + evidence</div>
+        <ul class="journey-points">
+          <li>Korchi: trained Gram Sabha members in CFR boundary mapping and forest-inventory collection; supplied CFR maps and economic-species distribution layers.</li>
+          <li>Studies in Gondia and Gadchiroli examined CFR co-benefits and GST impacts on the kendu economy.</li>
+        </ul>
+      </article>
+      <article class="journey-item" tabindex="0">
+        <div class="journey-step">
+          <div class="journey-num">02</div>
+          <div class="journey-label">Public Platforms</div>
+        </div>
+        <div class="journey-theme">State and national engagement</div>
+        <ul class="journey-points">
+          <li>Co-organised national bamboo conventions in Delhi and Mumbai with Shri Pasha Patel; joined MITRA’s consultation for the ADB bamboo-economy rollout.</li>
+          <li>An MoU for forest-resource inventory and renewed engagement with Gadchiroli ZP, Forest Department and district administration on bamboo value-chain action.</li>
+        </ul>
+      </article>
+      <article class="journey-item" tabindex="0">
+        <div class="journey-step">
+          <div class="journey-num">03</div>
+          <div class="journey-label">Demonstration</div>
+        </div>
+        <div class="journey-theme">Model demonstration + policy dialogue</div>
+        <ul class="journey-points">
+          <li>Through an MoU with Nandurbar district administration, demonstrated a women-led sustainable bamboo supply chain in CFR areas and began strengthening CFRMC capacity.</li>
+          <li>Presented the industry potential and community-centric model to Hon’ble Minister Shri Ashish Jaiswal, Co-Guardian Minister of Gadchiroli.</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     7 · MAHARASHTRA BAMBOO MODEL
+══════════════════════════════════════════════ -->
+<section data-header="Maharashtra Bamboo Model">
+  <div class="pane">
+    <div class="model-eyebrow">Maharashtra Bamboo Model</div>
+    <div class="model-title">A bamboo pathway built to scale</div>
+    <p class="model-lead">Community forest rights as the operating base for resource intelligence, governance capacity, enterprise, and market linkages.</p>
+    <div class="model-grid">
+      <div class="model-copy">
+        <div class="model-kicker">One integrated model — community rights as the operating foundation</div>
+        <div class="model-steps">
+          <article class="model-step" tabindex="0">
+            <div class="model-step-num">01</div>
+            <div class="model-step-body">
+              <div class="model-step-title">Resource Intelligence</div>
+              <p class="model-step-text">CFR boundaries, forest inventories and economic-species layers for shared planning evidence.</p>
+            </div>
+          </article>
+          <article class="model-step" tabindex="0">
+            <div class="model-step-num">02</div>
+            <div class="model-step-body">
+              <div class="model-step-title">Governance Capacity</div>
+              <p class="model-step-text">CFRMC strengthening with research evidence and district–Forest Department coordination.</p>
+            </div>
+          </article>
+          <article class="model-step" tabindex="0">
+            <div class="model-step-num">03</div>
+            <div class="model-step-body">
+              <div class="model-step-title">Enterprise + Markets</div>
+              <p class="model-step-text">Women-led bamboo aggregation and sustainable supply linked to industry and policy platforms.</p>
+            </div>
+          </article>
+        </div>
+        <div class="model-conclusion">Demonstrated in Nandurbar · advancing in Gadchiroli</div>
+        <div class="model-anchors-wrap">
+          <div class="model-anchors-label">Industry Investment Anchors · Conversations so far</div>
+          <div class="model-anchors">
+            <div class="model-anchor-card" tabindex="0"><img src="media/c1.png" alt="Industry investment anchor 1" /></div>
+            <div class="model-anchor-card" tabindex="0"><img src="media/c2.png" alt="Industry investment anchor 2" /></div>
+            <div class="model-anchor-card" tabindex="0"><img src="media/c3.png" alt="Industry investment anchor 3" /></div>
+            <div class="model-anchor-card" tabindex="0"><img src="media/c4.png" alt="Industry investment anchor 4" /></div>
+          </div>
+        </div>
+      </div>
+      <div class="model-hero">
+        <img src="media/bamboo.png" alt="Women-led bamboo pathway" />
+        <div class="model-hero-caption">
+          <b>Women-led bamboo supply chain</b>
+          <span>From community rights and capacity to enterprise-ready market linkages</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     8 · FULL-BLEED IMAGE
+══════════════════════════════════════════════ -->
+<section data-header="Gadchiroli Bamboo Economy : From forest rights to tribal wealth">
+  <div class="pane full-bleed">
+    <img class="full-bleed-media" src="media/slide.png" alt="Gadchiroli Bamboo Economy : From forest rights to tribal wealth" />
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     9 · DASHBOARD EMBED (no global header)
+══════════════════════════════════════════════ -->
+<section>
+  <div class="pane dash-embed">
+    <iframe
+      class="dash-iframe"
+      src="https://gd.ncount.in"
+      title="IoFE-Gadchiroli Pilot dashboard"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      allow="fullscreen"
+    ></iframe>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     10 · BUILDING TOGETHER (CLOSING)
+══════════════════════════════════════════════ -->
+<section data-background-color="#ffffff">
+  <div class="pane closing-pane">
+    <div class="closing-layout">
+      <div class="closing-panel">
+        <h2>Building Together</h2>
+        <div class="closing-photo">
+          <img src="media/outro.png" alt="Building together — forest canopy" />
+        </div>
+        <p>From 39 Forest Producer Companies toward a national model — reimagining forests as landscapes of opportunity, stewardship, and sustainability. We'd welcome the conversation.</p>
+        <div class="footer-line">Team IoFE &nbsp;|&nbsp; <span>forestgovernance.in</span></div>
+      </div>
+      <div class="closing-side">
+        <img class="closing-side-logo" src="media/isb.png" alt="ISB" />
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- .slides -->
+</div><!-- .reveal -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'fade',
+    transitionSpeed: 'fast',
+    backgroundTransition: 'fade',
+    controls: true,
+    progress: true,
+    center: false,
+    // Percentage sizing ties the slide canvas directly to the real viewport instead of
+    // scaling a fixed 1280×720 box — no more letterboxing, so slides use the full
+    // available height rather than sitting condensed in a scaled-down box.
+    width: '100%',
+    height: '100%',
+    margin: 0,
+    minScale: 1,
+    maxScale: 1
+  });
+
+  // ── GLOBAL HEADER + ENTRANCE ANIMATION ──
+  // Each <section> carries a data-header attribute; slides without one (the intro)
+  // hide the fixed header entirely. .animate-in is removed and re-forced on every
+  // slide change so the pane's children replay their entrance animation each time.
+  const gHeader = document.getElementById('g-header');
+  const gTitle  = document.getElementById('g-header-title');
+
+  function syncHeader(slide) {
+    const label = slide ? slide.dataset.header : null;
+    if (!label) { gHeader.classList.remove('show'); return; }
+    gTitle.textContent = label;
+    gHeader.classList.add('show');
+  }
+
+  function syncClosingControls(slide) {
+    const isClosing = !!(slide && slide.querySelector('.closing-pane'));
+    document.querySelector('.reveal')?.classList.toggle('hide-back-control', isClosing);
+  }
+
+  function animateSlide(slide) {
+    const target = slide ? slide.querySelector('.pane, .intro-wrap') : null;
+    if (!target) return;
+    target.classList.remove('animate-in');
+    void target.offsetWidth; // force reflow so the animation restarts
+    target.classList.add('animate-in');
+  }
+
+  Reveal.on('ready',        e => { syncHeader(e.currentSlide); syncClosingControls(e.currentSlide); animateSlide(e.currentSlide); });
+  Reveal.on('slidechanged', e => { syncHeader(e.currentSlide); syncClosingControls(e.currentSlide); animateSlide(e.currentSlide); });
+</script>
+
+</body>
+</html>
