@@ -724,6 +724,87 @@
     padding: 0;
     overflow: hidden;
     background: #f4f6fb;
+    position: relative;
+  }
+  .dash-frame-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .dash-toolbar {
+    flex: 0 0 auto;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 1.1rem;
+    background: #ffffff;
+    border-bottom: 1px solid rgba(25, 40, 144, 0.12);
+    box-shadow: 0 4px 14px rgba(14, 33, 69, 0.06);
+    z-index: 3;
+  }
+  .dash-embed.is-blocked .dash-toolbar,
+  .dash-embed.show-fallback .dash-toolbar {
+    display: flex;
+  }
+  .dash-toolbar-copy { min-width: 0; }
+  .dash-toolbar-kicker {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand-accent);
+    margin: 0 0 0.15rem;
+  }
+  .dash-toolbar-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    margin: 0;
+  }
+  .dash-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    flex-shrink: 0;
+  }
+  .dash-open-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
+    background: linear-gradient(145deg, #4E72D6, #2f54b8);
+    color: #fff !important;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none !important;
+    border: 0;
+    box-shadow: 0 8px 18px rgba(47, 84, 184, 0.28);
+    transition: transform .2s ease, box-shadow .2s ease;
+    pointer-events: auto;
+  }
+  .dash-open-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 22px rgba(47, 84, 184, 0.34);
+  }
+  .dash-open-btn-secondary {
+    background: #fff;
+    color: var(--ink) !important;
+    border: 1px solid rgba(25, 40, 144, 0.16);
+    box-shadow: none;
+  }
+  .dash-stage {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    background: #edf1f8;
   }
   .dash-iframe {
     display: block;
@@ -732,6 +813,62 @@
     border: 0;
     margin: 0;
     background: #fff;
+  }
+  .dash-fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background:
+      radial-gradient(circle at top right, rgba(125, 232, 212, 0.18), transparent 42%),
+      linear-gradient(160deg, #0e2145 0%, #192890 55%, #2f54b8 100%);
+    box-sizing: border-box;
+  }
+  .dash-embed.is-blocked .dash-fallback,
+  .dash-embed.show-fallback .dash-fallback {
+    display: flex;
+  }
+  .dash-embed.is-blocked .dash-iframe {
+    visibility: hidden;
+  }
+  .dash-fallback-card {
+    width: min(560px, 100%);
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 18px;
+    padding: 1.6rem 1.5rem 1.45rem;
+    box-shadow: 0 18px 40px rgba(8, 16, 48, 0.28);
+    text-align: left;
+  }
+  .dash-fallback-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 0.55rem;
+    line-height: 1.2;
+  }
+  .dash-fallback-card p {
+    font-size: 0.92rem;
+    color: #374151;
+    line-height: 1.5;
+    margin: 0 0 1rem;
+  }
+  .dash-fallback-url {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--brand-accent);
+    margin-bottom: 1.1rem;
+    word-break: break-all;
+  }
+  .dash-fallback-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
   }
 
   /* ── CLOSING (Slide 10) — no global header; full-height split ── */
@@ -1261,17 +1398,45 @@
 
 <!-- ══════════════════════════════════════════════
      9 · DASHBOARD EMBED (no global header)
+     Some networks/browsers block iframe embeds of gd.ncount.in.
+     Toolbar + fallback always offer a direct open path.
 ══════════════════════════════════════════════ -->
 <section>
-  <div class="pane dash-embed">
-    <iframe
-      class="dash-iframe"
-      src="https://gd.ncount.in"
-      title="IoFE-Gadchiroli Pilot dashboard"
-      loading="lazy"
-      referrerpolicy="no-referrer-when-downgrade"
-      allow="fullscreen"
-    ></iframe>
+  <div class="pane dash-embed" id="dash-embed">
+    <div class="dash-frame-wrap">
+      <div class="dash-toolbar">
+        <div class="dash-toolbar-copy">
+          <div class="dash-toolbar-kicker">Live dashboard</div>
+          <div class="dash-toolbar-title">IoFE–Gadchiroli Pilot</div>
+        </div>
+        <div class="dash-toolbar-actions">
+          <a class="dash-open-btn dash-open-btn-secondary" href="https://gd.ncount.in/" target="_blank" rel="noopener noreferrer">Open in new tab</a>
+          <button type="button" class="dash-open-btn" id="dash-retry-btn">Reload embed</button>
+        </div>
+      </div>
+      <div class="dash-stage">
+        <iframe
+          class="dash-iframe"
+          id="dash-iframe"
+          src="https://gd.ncount.in/"
+          title="IoFE-Gadchiroli Pilot dashboard"
+          loading="eager"
+          referrerpolicy="no-referrer-when-downgrade"
+          allow="fullscreen"
+        ></iframe>
+        <div class="dash-fallback" id="dash-fallback" aria-live="polite">
+          <div class="dash-fallback-card">
+            <h3>Open the live dashboard</h3>
+            <p>This browser or network is blocking the embedded view. Use the link below — the full app opens in a new tab.</p>
+            <a class="dash-fallback-url" href="https://gd.ncount.in/" target="_blank" rel="noopener noreferrer">https://gd.ncount.in/</a>
+            <div class="dash-fallback-actions">
+              <a class="dash-open-btn" href="https://gd.ncount.in/" target="_blank" rel="noopener noreferrer">Open dashboard</a>
+              <button type="button" class="dash-open-btn dash-open-btn-secondary" id="dash-hide-fallback-btn">Try embed again</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1347,6 +1512,64 @@
     target.classList.add('animate-in');
   }
 
+  // ── DASHBOARD EMBED FALLBACK ──
+  // Cross-origin iframes often cannot be inspected; if the host blocks framing
+  // (X-Frame-Options / CSP) or the network filters the site, show a clear CTA.
+  const dashEmbed = document.getElementById('dash-embed');
+  const dashIframe = document.getElementById('dash-iframe');
+  const dashRetryBtn = document.getElementById('dash-retry-btn');
+  const dashHideFallbackBtn = document.getElementById('dash-hide-fallback-btn');
+  let dashLoadTimer = null;
+  let dashMarkedOk = false;
+
+  function showDashFallback(blocked) {
+    if (!dashEmbed) return;
+    dashEmbed.classList.add('show-fallback');
+    if (blocked) dashEmbed.classList.add('is-blocked');
+  }
+
+  function hideDashFallback() {
+    if (!dashEmbed) return;
+    dashEmbed.classList.remove('is-blocked', 'show-fallback');
+  }
+
+  function reloadDashIframe() {
+    if (!dashIframe) return;
+    dashMarkedOk = false;
+    hideDashFallback();
+    const url = 'https://gd.ncount.in/?embed=' + Date.now();
+    dashIframe.src = url;
+    armDashWatchdog();
+  }
+
+  function armDashWatchdog() {
+    if (dashLoadTimer) clearTimeout(dashLoadTimer);
+    // Only show header/fallback if the iframe does not load in time.
+    dashLoadTimer = setTimeout(() => {
+      if (!dashMarkedOk) showDashFallback(true);
+    }, 4500);
+  }
+
+  if (dashIframe) {
+    dashIframe.addEventListener('load', () => {
+      dashMarkedOk = true;
+      if (dashLoadTimer) clearTimeout(dashLoadTimer);
+      hideDashFallback();
+    });
+    dashIframe.addEventListener('error', () => showDashFallback(true));
+    armDashWatchdog();
+  }
+
+  dashRetryBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    reloadDashIframe();
+  });
+  dashHideFallbackBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    reloadDashIframe();
+  });
+
+  // Pointer events stay on for toolbar/fallback links (global header is pointer-events:none only).
   Reveal.on('ready',        e => { syncHeader(e.currentSlide); syncClosingControls(e.currentSlide); animateSlide(e.currentSlide); });
   Reveal.on('slidechanged', e => { syncHeader(e.currentSlide); syncClosingControls(e.currentSlide); animateSlide(e.currentSlide); });
 </script>
