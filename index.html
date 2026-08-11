@@ -301,113 +301,266 @@
     object-fit:cover; object-position:center top; display:block;
   }
 
-  /* Influence lower block: pillars sit with photos at bottom; gap kept from thesis above */
-  .pane:has(.inf-lower) .ev-thesis { margin-bottom:0; }
-  .inf-lower {
-    margin-top:auto; flex:0 0 auto; width:100%;
-    display:flex; flex-direction:column; gap:3.2rem;
+  /* ── INFLUENCE & EVIDENCE (dedicated redesign) ── */
+  @keyframes infIn {
+    from { opacity:0; transform:translateY(14px); }
+    to   { opacity:1; transform:translateY(0); }
   }
-  .inf-pillars { display:grid; grid-template-columns:repeat(3,1fr); gap:0.85rem; margin:0; flex-shrink:0; }
-  .inf-pillar { background:var(--brand-mid); border-top:3px solid var(--brand-accent); border-radius:0 0 8px 8px; padding:0.85rem 1rem; }
-  .inf-pillar b { display:block; font-family:var(--font-display); font-size:0.95rem; color:var(--ink); margin-bottom:0.3rem; }
-  .inf-pillar span { font-size:0.78rem; color:#374151; line-height:1.45; }
-  /* Compact landscape photo strip (matches reference gallery row) */
+  .inf-pane { gap:0; }
+  .inf-eyebrow {
+    font-family:var(--font-body); font-size:0.72rem; font-weight:700;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--brand-accent);
+    margin:0 0 0.35rem; flex-shrink:0;
+  }
+  .inf-title {
+    font-family:var(--font-display); font-size:1.55rem; font-weight:800;
+    color:var(--ink); margin:0 0 0.45rem; line-height:1.15; flex-shrink:0;
+  }
+  .inf-lead {
+    font-size:0.9rem; color:#4b5568; line-height:1.45; max-width:46rem;
+    margin:0 0 1rem; flex-shrink:0;
+  }
+  .inf-stack {
+    flex:1; min-height:0; display:flex; flex-direction:column; gap:0.9rem;
+  }
+  .inf-pillars {
+    display:grid; grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:0.85rem; flex:0 0 auto;
+  }
+  .inf-pillar {
+    position:relative; overflow:hidden;
+    background:linear-gradient(180deg, #ffffff 0%, #f4f7fc 100%);
+    border:1px solid rgba(25,40,144,0.12); border-radius:16px;
+    padding:1rem 1.05rem 1.05rem;
+    box-shadow:0 10px 24px rgba(14,33,69,0.07);
+    cursor:default;
+    transition: transform .28s cubic-bezier(.16,.84,.44,1), box-shadow .28s ease, border-color .28s ease;
+  }
+  .inf-pillar::before {
+    content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background:linear-gradient(180deg, #4E72D6, #7de8d4);
+  }
+  .inf-pillar:hover,
+  .inf-pillar:focus-within {
+    transform:translateY(-5px);
+    border-color:rgba(78,114,214,0.35);
+    box-shadow:0 16px 32px rgba(14,33,69,0.14);
+  }
+  .inf-pillar-top {
+    display:flex; align-items:center; gap:0.65rem; margin-bottom:0.55rem;
+  }
+  .inf-pillar-num {
+    width:2rem; height:2rem; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-body); font-size:0.78rem; font-weight:800; color:#fff;
+    background:linear-gradient(145deg, #4E72D6, #2f54b8);
+    box-shadow:0 6px 14px rgba(47,84,184,0.28);
+  }
+  .inf-pillar-label {
+    font-family:var(--font-body); font-size:0.72rem; font-weight:700;
+    letter-spacing:0.12em; text-transform:uppercase; color:var(--brand-accent);
+  }
+  .inf-pillar b {
+    display:block; font-family:var(--font-display); font-size:1.08rem;
+    font-weight:700; color:var(--ink); margin:0 0 0.35rem; line-height:1.2;
+  }
+  .inf-pillar span {
+    display:block; font-size:0.82rem; color:#374151; line-height:1.45;
+  }
+  .inf-gallery-wrap {
+    flex:0 0 auto; display:flex; flex-direction:column; gap:0.55rem; margin-top:auto;
+  }
+  .inf-gallery-label {
+    display:flex; align-items:center; gap:0.55rem;
+    font-size:0.7rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+    color:#8a97b8; flex-shrink:0;
+  }
+  .inf-gallery-label::after {
+    content:''; flex:1; height:1px; background:linear-gradient(90deg, var(--brand-line), transparent);
+  }
   .inf-photos {
-    margin-top:0; flex:0 0 auto; width:100%;
-    display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); gap:0.55rem;
-    height:clamp(148px, 26vh, 210px);
+    flex:0 0 auto;
+    height:clamp(140px, 22vh, 190px);
+    display:grid; grid-template-columns:1.35fr 1fr 1fr 1fr 1.2fr; gap:0.6rem;
   }
   .inf-photo {
-    min-width:0; height:100%; overflow:hidden; border-radius:10px;
-    border:1px solid rgba(25,40,144,0.14); background:#eef2f8;
-    box-shadow:0 4px 14px rgba(14,33,69,0.08);
+    position:relative; min-width:0; min-height:0; height:100%;
+    overflow:hidden; border-radius:14px;
+    border:1px solid rgba(25,40,144,0.12); background:#e8eef8;
+    box-shadow:0 8px 20px rgba(14,33,69,0.08);
+    transition: transform .28s ease, box-shadow .28s ease;
+  }
+  .inf-photo:hover {
+    transform:translateY(-4px) scale(1.01);
+    box-shadow:0 14px 28px rgba(14,33,69,0.16);
+    z-index:2;
   }
   .reveal .inf-photo img {
     width:100% !important; height:100% !important; max-width:none !important; max-height:none !important;
     margin:0 !important; padding:0 !important; border:0 !important; background:none !important;
     box-shadow:none !important; border-radius:0; display:block;
     object-fit:cover; object-position:center;
+    transition: transform 0.55s ease;
   }
+  .inf-photo:hover img { transform:scale(1.06); }
+  .inf-photo-cap {
+    position:absolute; left:0; right:0; bottom:0;
+    padding:1.4rem 0.55rem 0.5rem;
+    background:linear-gradient(to top, rgba(10,22,70,0.82) 0%, rgba(10,22,70,0.2) 70%, transparent 100%);
+    font-size:0.62rem; font-weight:600; color:#fff; line-height:1.25;
+    opacity:0; transform:translateY(6px);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  .inf-photo:hover .inf-photo-cap,
+  .inf-photo:focus-within .inf-photo-cap {
+    opacity:1; transform:translateY(0);
+  }
+  .present .inf-lead { animation: infIn 0.5s cubic-bezier(.16,.84,.44,1) both; animation-delay:.05s; }
+  .present .inf-pillar { animation: infIn 0.55s cubic-bezier(.16,.84,.44,1) both; }
+  .present .inf-pillar:nth-child(1) { animation-delay:.12s; }
+  .present .inf-pillar:nth-child(2) { animation-delay:.2s; }
+  .present .inf-pillar:nth-child(3) { animation-delay:.28s; }
+  .present .inf-gallery-wrap { animation: infIn 0.55s cubic-bezier(.16,.84,.44,1) both; animation-delay:.36s; }
 
   /* ── JOURNEY (Slide 6) ── */
   @keyframes journeyIn {
     from { opacity:0; transform:translateY(16px); }
     to   { opacity:1; transform:translateY(0); }
   }
+  .journey-pane { gap:0; }
+  .journey-head {
+    display:flex; align-items:flex-end; justify-content:space-between; gap:1.2rem;
+    flex-shrink:0; margin-bottom:0.85rem;
+  }
+  .journey-head-copy { min-width:0; flex:1; }
   .journey-eyebrow {
     font-family:var(--font-body); font-size:0.72rem; font-weight:700;
-    letter-spacing:0.14em; text-transform:uppercase; color:var(--brand-accent); margin-bottom:0.4rem;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--brand-accent); margin:0 0 0.35rem;
   }
   .journey-title {
-    font-size:1.55rem; font-weight:800; margin-bottom:0.35rem; max-width:720px; color:var(--ink);
+    font-family:var(--font-display); font-size:1.55rem; font-weight:800;
+    margin:0 0 0.35rem; max-width:40rem; color:var(--ink); line-height:1.15;
   }
   .journey-lead {
-    font-size:0.88rem; color:#4b5568; line-height:1.45; margin:0 0 1.1rem; max-width:46rem;
+    font-size:0.88rem; color:#4b5568; line-height:1.45; margin:0; max-width:42rem;
+  }
+  .journey-meta {
+    flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end; gap:0.35rem;
+    padding:0.65rem 0.85rem; border-radius:14px;
+    background:linear-gradient(135deg, #eef3ff 0%, #e7f8f4 100%);
+    border:1px solid rgba(78,114,214,0.18);
+  }
+  .journey-meta b {
+    font-family:var(--font-display); font-size:1.35rem; font-weight:800; color:var(--ink); line-height:1;
+  }
+  .journey-meta span {
+    font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#5b6b95;
+  }
+  .journey-arc {
+    display:flex; align-items:center; gap:0.45rem; flex-shrink:0; margin-bottom:0.9rem;
+  }
+  .journey-arc-step {
+    display:flex; align-items:center; gap:0.4rem;
+    font-size:0.72rem; font-weight:700; color:var(--ink); white-space:nowrap;
+  }
+  .journey-arc-dot {
+    width:0.55rem; height:0.55rem; border-radius:50%;
+    background:linear-gradient(145deg, #4E72D6, #2f54b8); flex-shrink:0;
+    box-shadow:0 0 0 4px rgba(78,114,214,0.12);
+  }
+  .journey-arc-line {
+    flex:1; height:2px; min-width:1rem;
+    background:linear-gradient(90deg, rgba(78,114,214,0.55), rgba(125,232,212,0.75));
+    border-radius:999px;
   }
   .journey-row {
     flex:1; min-height:0; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr));
-    gap:1.1rem; align-items:stretch; position:relative;
-  }
-  .journey-row::before {
-    content:''; position:absolute; left:8%; right:8%; top:1.55rem; height:2px;
-    background:linear-gradient(90deg, rgba(78,114,214,0.15), rgba(78,114,214,0.55), rgba(78,114,214,0.15));
-    z-index:0; pointer-events:none;
+    gap:0.95rem; align-items:stretch; position:relative;
   }
   .journey-item {
-    position:relative; z-index:1; min-height:0;
-    display:flex; flex-direction:column; gap:0.65rem;
+    position:relative; z-index:1; min-height:0; height:100%;
+    display:flex; flex-direction:column; gap:0.7rem;
     background:linear-gradient(180deg, #ffffff 0%, #f5f8fd 100%);
-    border:1px solid rgba(25,40,144,0.12); border-radius:16px;
-    padding:1.15rem 1.15rem 1.2rem;
-    box-shadow:0 10px 24px rgba(14,33,69,0.07);
+    border:1px solid rgba(25,40,144,0.12); border-radius:18px;
+    padding:0; overflow:hidden;
+    box-shadow:0 12px 28px rgba(14,33,69,0.08);
     transition: transform .28s cubic-bezier(.16,.84,.44,1), box-shadow .28s ease, border-color .28s ease;
     cursor:default;
   }
   .journey-item:hover {
-    transform:translateY(-6px);
+    transform:translateY(-5px);
     box-shadow:0 18px 34px rgba(14,33,69,0.14);
     border-color:rgba(78,114,214,0.35);
   }
   .journey-item:focus-within {
     outline:2px solid rgba(78,114,214,0.35); outline-offset:2px;
   }
+  .journey-item-head {
+    display:flex; align-items:center; justify-content:space-between; gap:0.6rem;
+    padding:0.9rem 1rem 0.75rem;
+    background:linear-gradient(135deg, rgba(78,114,214,0.1) 0%, rgba(125,232,212,0.12) 100%);
+    border-bottom:1px solid rgba(25,40,144,0.08);
+  }
   .journey-step {
-    display:flex; align-items:center; gap:0.65rem; margin-bottom:0.15rem;
+    display:flex; align-items:center; gap:0.55rem; min-width:0;
   }
   .journey-num {
-    width:2.15rem; height:2.15rem; border-radius:50%; flex-shrink:0;
+    width:2.05rem; height:2.05rem; border-radius:50%; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
-    font-family:var(--font-body); font-size:0.85rem; font-weight:800;
+    font-family:var(--font-body); font-size:0.8rem; font-weight:800;
     color:#fff; background:linear-gradient(145deg, #4E72D6, #2f54b8);
     box-shadow:0 6px 14px rgba(47,84,184,0.28);
   }
   .journey-label {
-    font-family:var(--font-body); font-size:0.95rem; font-weight:700;
-    letter-spacing:0.02em; color:var(--ink); line-height:1.2; margin:0;
+    font-family:var(--font-body); font-size:0.95rem; font-weight:800;
+    letter-spacing:0.02em; color:var(--ink); line-height:1.15; margin:0;
+  }
+  .journey-phase {
+    flex-shrink:0; font-size:0.62rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;
+    color:#0e2145; background:rgba(255,255,255,0.85); border:1px solid rgba(25,40,144,0.12);
+    border-radius:999px; padding:0.28rem 0.55rem; white-space:nowrap;
+  }
+  .journey-item-body {
+    display:flex; flex-direction:column; gap:0.55rem; padding:0.15rem 1rem 1rem; min-height:0; flex:1;
   }
   .journey-theme {
-    font-family:var(--font-body); font-size:0.88rem; font-weight:700; color:var(--brand-accent);
-    letter-spacing:0.01em; margin:0 0 0.15rem;
+    font-family:var(--font-display); font-size:1rem; font-weight:700; color:var(--ink);
+    letter-spacing:-0.01em; margin:0; line-height:1.25;
+  }
+  .journey-places {
+    display:flex; flex-wrap:wrap; gap:0.3rem;
+  }
+  .journey-place {
+    font-size:0.62rem; font-weight:700; letter-spacing:0.04em; text-transform:uppercase;
+    color:#2f54b8; background:#eef3ff; border:1px solid rgba(78,114,214,0.18);
+    border-radius:999px; padding:0.22rem 0.48rem;
   }
   /* Kill default/Reveal list bullets so only one marker shows */
   .reveal .journey-points,
   .reveal .journey-points li {
     list-style:none !important; list-style-type:none !important;
   }
-  .journey-points { display:flex; flex-direction:column; gap:0.65rem; margin:0; padding:0; }
+  .journey-points { display:flex; flex-direction:column; gap:0.55rem; margin:0; padding:0; flex:1; }
   .journey-points li {
-    position:relative; padding-left:1rem;
-    font-family:var(--font-body); font-size:0.8rem; color:#374151; line-height:1.5;
+    position:relative; padding:0.55rem 0.65rem 0.55rem 1.05rem;
+    font-family:var(--font-body); font-size:0.78rem; color:#374151; line-height:1.45;
+    background:rgba(255,255,255,0.72); border:1px solid rgba(25,40,144,0.08);
+    border-radius:10px;
   }
   .journey-points li::marker { content:none; }
   .journey-points li::before {
-    content:''; position:absolute; left:0; top:0.55em;
-    width:7px; height:7px; border-radius:50%; background:#7de8d4;
+    content:''; position:absolute; left:0.45rem; top:0.85em;
+    width:6px; height:6px; border-radius:50%; background:#7de8d4;
   }
-  .present .journey-lead { animation: journeyIn 0.5s cubic-bezier(.16,.84,.44,1) both; animation-delay:.05s; }
+  .present .journey-lead,
+  .present .journey-meta,
+  .present .journey-arc { animation: journeyIn 0.5s cubic-bezier(.16,.84,.44,1) both; }
+  .present .journey-lead { animation-delay:.04s; }
+  .present .journey-meta { animation-delay:.08s; }
+  .present .journey-arc { animation-delay:.12s; }
   .present .journey-item { animation: journeyIn 0.55s cubic-bezier(.16,.84,.44,1) both; }
-  .present .journey-item:nth-child(1) { animation-delay:.12s; }
-  .present .journey-item:nth-child(2) { animation-delay:.22s; }
+  .present .journey-item:nth-child(1) { animation-delay:.16s; }
+  .present .journey-item:nth-child(2) { animation-delay:.24s; }
   .present .journey-item:nth-child(3) { animation-delay:.32s; }
 
   /* ── BAMBOO MODEL (Slide 7) ── */
@@ -886,22 +1039,63 @@
      5 · INFLUENCE & EVIDENCE
 ══════════════════════════════════════════════ -->
 <section data-header="Influence &amp; Evidence">
-  <div class="pane">
-    <div class="ev-title">Influence &amp; Evidence</div>
-    <div class="ev-sub">Policy Convening &amp; Knowledge Dissemination</div>
-    <div class="ev-thesis">Shaping bamboo policy, convening the sector around shared priorities, and putting the evidence into the public domain.</div>
-    <div class="inf-lower">
+  <div class="pane inf-pane">
+    <div class="inf-eyebrow">Policy · Convening · Knowledge</div>
+    <div class="inf-title">Influence &amp; Evidence</div>
+    <p class="inf-lead">Shaping bamboo policy, convening the sector around shared priorities, and putting the evidence into the public domain.</p>
+
+    <div class="inf-stack">
       <div class="inf-pillars">
-        <div class="inf-pillar"><b>Policy</b><span>AP Bamboo Policy inputs; state and national working groups</span></div>
-        <div class="inf-pillar"><b>Convening</b><span>National Bamboo Roundtable; state-level roundtables</span></div>
-        <div class="inf-pillar"><b>Knowledge Dissemination</b><span>Research papers, sector reports and the Bark Vision publication</span></div>
+        <article class="inf-pillar" tabindex="0">
+          <div class="inf-pillar-top">
+            <div class="inf-pillar-num">01</div>
+            <div class="inf-pillar-label">Policy</div>
+          </div>
+          <b>Policy inputs that travel</b>
+          <span>AP Bamboo Policy contributions, plus state and national working groups that keep community-centric models in the frame.</span>
+        </article>
+        <article class="inf-pillar" tabindex="0">
+          <div class="inf-pillar-top">
+            <div class="inf-pillar-num">02</div>
+            <div class="inf-pillar-label">Convening</div>
+          </div>
+          <b>Tables where the sector aligns</b>
+          <span>National Bamboo Roundtable and state-level roundtables that connect government, industry, and community partners.</span>
+        </article>
+        <article class="inf-pillar" tabindex="0">
+          <div class="inf-pillar-top">
+            <div class="inf-pillar-num">03</div>
+            <div class="inf-pillar-label">Knowledge</div>
+          </div>
+          <b>Evidence in the public domain</b>
+          <span>Research papers, sector reports, and the Bark Vision publication that make the case visible and usable.</span>
+        </article>
       </div>
-      <div class="inf-photos" aria-label="Influence and evidence photo strip">
-        <div class="inf-photo"><img src="media/logo1.png" alt="Sunrise in Pangi publication" /></div>
-        <div class="inf-photo"><img src="media/logo2.png" alt="Report launch with partners" /></div>
-        <div class="inf-photo"><img src="media/logo3.png" alt="Policy convening roundtable" /></div>
-        <div class="inf-photo"><img src="media/logo4.png" alt="Save the Earth Conclave" /></div>
-        <div class="inf-photo"><img src="media/logo5.png" alt="BarkVisionAI dataset" /></div>
+
+      <div class="inf-gallery-wrap">
+        <div class="inf-gallery-label">Moments from the field &amp; the page</div>
+        <div class="inf-photos" aria-label="Influence and evidence photo strip">
+          <div class="inf-photo" tabindex="0">
+            <img src="media/logo1.png" alt="Sunrise in Pangi publication" />
+            <div class="inf-photo-cap">Sunrise in Pangi</div>
+          </div>
+          <div class="inf-photo" tabindex="0">
+            <img src="media/logo2.png" alt="Report launch with partners" />
+            <div class="inf-photo-cap">Report launch</div>
+          </div>
+          <div class="inf-photo" tabindex="0">
+            <img src="media/logo3.png" alt="Policy convening roundtable" />
+            <div class="inf-photo-cap">Policy convening</div>
+          </div>
+          <div class="inf-photo" tabindex="0">
+            <img src="media/logo4.png" alt="Save the Earth Conclave" />
+            <div class="inf-photo-cap">Save the Earth</div>
+          </div>
+          <div class="inf-photo" tabindex="0">
+            <img src="media/logo5.png" alt="BarkVisionAI dataset" />
+            <div class="inf-photo-cap">BarkVisionAI</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -911,43 +1105,90 @@
      6 · MAHARASHTRA ENGAGEMENT JOURNEY
 ══════════════════════════════════════════════ -->
 <section data-header="Maharashtra Engagement Journey">
-  <div class="pane">
-    <div class="journey-eyebrow">Maharashtra | Engagement Journey</div>
-    <div class="journey-title">Six engagements, one forest-economy pathway</div>
-    <p class="journey-lead">From community capability to public platforms and model demonstration — a connected pathway for Maharashtra’s forest economy.</p>
+  <div class="pane journey-pane">
+    <div class="journey-head">
+      <div class="journey-head-copy">
+        <div class="journey-eyebrow">Maharashtra | Engagement Journey</div>
+        <div class="journey-title">Six engagements, one forest-economy pathway</div>
+        <p class="journey-lead">From community capability to public platforms and model demonstration — a connected pathway for Maharashtra’s forest economy.</p>
+      </div>
+      <div class="journey-meta">
+        <b>3 stages</b>
+        <span>6 engagements</span>
+      </div>
+    </div>
+
+    <div class="journey-arc" aria-hidden="true">
+      <div class="journey-arc-step"><span class="journey-arc-dot"></span>Foundation</div>
+      <div class="journey-arc-line"></div>
+      <div class="journey-arc-step"><span class="journey-arc-dot"></span>Public Platforms</div>
+      <div class="journey-arc-line"></div>
+      <div class="journey-arc-step"><span class="journey-arc-dot"></span>Demonstration</div>
+    </div>
+
     <div class="journey-row">
       <article class="journey-item" tabindex="0">
-        <div class="journey-step">
-          <div class="journey-num">01</div>
-          <div class="journey-label">Foundation</div>
+        <div class="journey-item-head">
+          <div class="journey-step">
+            <div class="journey-num">01</div>
+            <div class="journey-label">Foundation</div>
+          </div>
+          <div class="journey-phase">Build</div>
         </div>
-        <div class="journey-theme">Community capability + evidence</div>
-        <ul class="journey-points">
-          <li>Korchi: trained Gram Sabha members in CFR boundary mapping and forest-inventory collection; supplied CFR maps and economic-species distribution layers.</li>
-          <li>Studies in Gondia and Gadchiroli examined CFR co-benefits and GST impacts on the kendu economy.</li>
-        </ul>
+        <div class="journey-item-body">
+          <div class="journey-theme">Community capability + evidence</div>
+          <div class="journey-places">
+            <span class="journey-place">Korchi</span>
+            <span class="journey-place">Gadchiroli</span>
+          </div>
+          <ul class="journey-points">
+            <li>Trained Gram Sabha members in CFR boundary mapping and forest-inventory collection; supplied CFR maps and economic-species layers.</li>
+            <li>Studies examined CFR co-benefits and GST impacts on the kendu economy.</li>
+          </ul>
+        </div>
       </article>
+
       <article class="journey-item" tabindex="0">
-        <div class="journey-step">
-          <div class="journey-num">02</div>
-          <div class="journey-label">Public Platforms</div>
+        <div class="journey-item-head">
+          <div class="journey-step">
+            <div class="journey-num">02</div>
+            <div class="journey-label">Public Platforms</div>
+          </div>
+          <div class="journey-phase">Align</div>
         </div>
-        <div class="journey-theme">State and national engagement</div>
-        <ul class="journey-points">
-          <li>Co-organised national bamboo conventions in Delhi and Mumbai with Shri Pasha Patel; joined MITRA’s consultation for the ADB bamboo-economy rollout.</li>
-          <li>An MoU for forest-resource inventory and renewed engagement with Gadchiroli ZP, Forest Department and district administration on bamboo value-chain action.</li>
-        </ul>
+        <div class="journey-item-body">
+          <div class="journey-theme">State and national engagement</div>
+          <div class="journey-places">
+            <span class="journey-place">Delhi</span>
+            <span class="journey-place">Mumbai</span>
+            <span class="journey-place">Gadchiroli</span>
+          </div>
+          <ul class="journey-points">
+            <li>Co-organised national bamboo conventions with Shri Pasha Patel; joined MITRA’s consultation for the ADB bamboo-economy rollout.</li>
+            <li>MoU for forest-resource inventory and renewed engagement with ZP, Forest Department and district administration.</li>
+          </ul>
+        </div>
       </article>
+
       <article class="journey-item" tabindex="0">
-        <div class="journey-step">
-          <div class="journey-num">03</div>
-          <div class="journey-label">Demonstration</div>
+        <div class="journey-item-head">
+          <div class="journey-step">
+            <div class="journey-num">03</div>
+            <div class="journey-label">Demonstration</div>
+          </div>
+          <div class="journey-phase">Prove</div>
         </div>
-        <div class="journey-theme">Model demonstration + policy dialogue</div>
-        <ul class="journey-points">
-          <li>Through an MoU with Nandurbar district administration, demonstrated a women-led sustainable bamboo supply chain in CFR areas and began strengthening CFRMC capacity.</li>
-          <li>Presented the industry potential and community-centric model to Hon’ble Minister Shri Ashish Jaiswal, Co-Guardian Minister of Gadchiroli.</li>
-        </ul>
+        <div class="journey-item-body">
+          <div class="journey-theme">Model demonstration + policy dialogue</div>
+          <div class="journey-places">
+            <span class="journey-place">Nandurbar</span>
+            <span class="journey-place">Gadchiroli</span>
+          </div>
+          <ul class="journey-points">
+            <li>Through an MoU with Nandurbar district administration, demonstrated a women-led bamboo supply chain in CFR areas and strengthened CFRMC capacity.</li>
+            <li>Presented the community-centric model to Hon’ble Minister Shri Ashish Jaiswal, Co-Guardian Minister of Gadchiroli.</li>
+          </ul>
+        </div>
       </article>
     </div>
   </div>
