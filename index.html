@@ -1418,7 +1418,8 @@
         <iframe
           class="dash-iframe"
           id="dash-iframe"
-          src="https://gd.ncount.in/"
+          src="about:blank"
+          data-dash-src="https://gd.ncount.in/"
           title="IoFE-Gadchiroli Pilot dashboard"
           loading="eager"
           referrerpolicy="no-referrer-when-downgrade"
@@ -1512,15 +1513,22 @@
     target.classList.add('animate-in');
   }
 
-  // ── DASHBOARD EMBED FALLBACK ──
-  // Cross-origin iframes often cannot be inspected; if the host blocks framing
-  // (X-Frame-Options / CSP) or the network filters the site, show a clear CTA.
+  // ── DASHBOARD EMBED ──
+  // Map widgets often init with wrong size if the iframe loads while the slide
+  // is hidden. Load/reload only when the dashboard slide is active.
   const dashEmbed = document.getElementById('dash-embed');
   const dashIframe = document.getElementById('dash-iframe');
   const dashRetryBtn = document.getElementById('dash-retry-btn');
   const dashHideFallbackBtn = document.getElementById('dash-hide-fallback-btn');
+  const DASH_SRC = (dashIframe && dashIframe.dataset.dashSrc) || 'https://gd.ncount.in/';
   let dashLoadTimer = null;
+  let dashResizeTimer = null;
   let dashMarkedOk = false;
+  let dashOnSlide = false;
+
+  function isDashSlide(slide) {
+    return !!(slide && slide.querySelector('#dash-embed'));
+  }
 
   function showDashFallback(blocked) {
     if (!dashEmbed) return;
@@ -1533,31 +1541,63 @@
     dashEmbed.classList.remove('is-blocked', 'show-fallback');
   }
 
-  function reloadDashIframe() {
-    if (!dashIframe) return;
-    dashMarkedOk = false;
-    hideDashFallback();
-    const url = 'https://gd.ncount.in/?embed=' + Date.now();
-    dashIframe.src = url;
-    armDashWatchdog();
-  }
-
   function armDashWatchdog() {
     if (dashLoadTimer) clearTimeout(dashLoadTimer);
     // Only show header/fallback if the iframe does not load in time.
     dashLoadTimer = setTimeout(() => {
-      if (!dashMarkedOk) showDashFallback(true);
-    }, 4500);
+      if (dashOnSlide && !dashMarkedOk) showDashFallback(true);
+    }, 8000);
+  }
+
+  function reloadDashIframe() {
+    if (!dashIframe) return;
+    dashMarkedOk = false;
+    hideDashFallback();
+    // Force a full navigation so map tiles/layout re-init cleanly.
+    dashIframe.src = 'about:blank';
+    requestAnimationFrame(() => {
+      // Wait one frame so the stage has real dimensions after the slide transition.
+      const bust = 't=' + Date.now();
+      const base = DASH_SRC.includes('?') ? DASH_SRC + '&' + bust : DASH_SRC + '?' + bust;
+      dashIframe.src = base;
+      armDashWatchdog();
+    });
+  }
+
+  function unloadDashIframe() {
+    if (!dashIframe) return;
+    if (dashLoadTimer) clearTimeout(dashLoadTimer);
+    if (dashResizeTimer) clearTimeout(dashResizeTimer);
+    dashMarkedOk = false;
+    hideDashFallback();
+    dashIframe.src = 'about:blank';
+  }
+
+  function syncDashSlide(slide) {
+    const active = isDashSlide(slide);
+    if (active && !dashOnSlide) {
+      dashOnSlide = true;
+      // Delay slightly so Reveal finishes layout before the map measures the frame.
+      if (dashResizeTimer) clearTimeout(dashResizeTimer);
+      dashResizeTimer = setTimeout(reloadDashIframe, 180);
+    } else if (!active && dashOnSlide) {
+      dashOnSlide = false;
+      unloadDashIframe();
+    }
   }
 
   if (dashIframe) {
     dashIframe.addEventListener('load', () => {
+      // Ignore the intermediate about:blank load used during reload.
+      if (!dashOnSlide) return;
+      if (!dashIframe.src || dashIframe.src === 'about:blank' || /about:blank/i.test(dashIframe.src)) return;
       dashMarkedOk = true;
       if (dashLoadTimer) clearTimeout(dashLoadTimer);
       hideDashFallback();
     });
-    dashIframe.addEventListener('error', () => showDashFallback(true));
-    armDashWatchdog();
+    dashIframe.addEventListener('error', () => {
+      if (dashOnSlide) showDashFallback(true);
+    });
   }
 
   dashRetryBtn?.addEventListener('click', (e) => {
@@ -1569,9 +1609,18 @@
     reloadDashIframe();
   });
 
-  // Pointer events stay on for toolbar/fallback links (global header is pointer-events:none only).
-  Reveal.on('ready',        e => { syncHeader(e.currentSlide); syncClosingControls(e.currentSlide); animateSlide(e.currentSlide); });
-  Reveal.on('slidechanged', e => { syncHeader(e.currentSlide); syncClosingControls(e.currentSlide); animateSlide(e.currentSlide); });
+  Reveal.on('ready', e => {
+    syncHeader(e.currentSlide);
+    syncClosingControls(e.currentSlide);
+    animateSlide(e.currentSlide);
+    syncDashSlide(e.currentSlide);
+  });
+  Reveal.on('slidechanged', e => {
+    syncHeader(e.currentSlide);
+    syncClosingControls(e.currentSlide);
+    animateSlide(e.currentSlide);
+    syncDashSlide(e.currentSlide);
+  });
 </script>
 
 </body>
