@@ -143,24 +143,25 @@
   }
 
   /* Outcomes */
-  .opp-outcomes-row { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
+  .opp-outcomes-row { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:0.7rem; }
   .opp-outcome {
-    display:flex; align-items:center; gap:0.75rem;
+    display:flex; align-items:center; gap:0.65rem;
     background:linear-gradient(135deg, #d8faf3 0%, #b8f0e4 100%);
     border:1px solid rgba(45,212,191,0.35);
-    border-radius:14px; padding:0.75rem 0.95rem;
+    border-radius:14px; padding:0.7rem 0.8rem;
     box-shadow:0 6px 18px rgba(14,33,69,0.06);
     transition: transform .25s ease, box-shadow .25s ease;
     cursor:default;
+    min-width:0;
   }
   .opp-outcome:hover { transform:translateY(-3px); box-shadow:0 12px 24px rgba(14,33,69,0.12); }
   .opp-outcome-icon {
-    width:2.4rem; height:2.4rem; border-radius:50%; flex-shrink:0;
+    width:2.25rem; height:2.25rem; border-radius:50%; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
-    background:#0e2145; color:#7de8d4; font-size:1.12rem; font-weight:700;
+    background:#0e2145; color:#7de8d4; font-size:1.05rem; font-weight:700;
   }
-  .opp-outcome b { font-family:var(--font-display); font-size:1.08rem; font-weight:700; color:#0e2145; display:block; line-height:1.2; }
-  .opp-outcome span { font-size:0.8rem; color:#1f3a5f; line-height:1.35; }
+  .opp-outcome b { font-family:var(--font-display); font-size:0.95rem; font-weight:700; color:#0e2145; display:block; line-height:1.2; }
+  .opp-outcome span { font-size:0.74rem; color:#1f3a5f; line-height:1.35; }
 
   /* Connector between layers */
   .opp-connector {
@@ -1045,7 +1046,7 @@
 <section data-header="Opportunity: Introducing IoFE">
   <div class="pane">
     <h2 class="opp-title">Opportunity: Introducing Initiative on the Forest Economy</h2>
-    <p class="opp-lead">A stacked systems model — secure tenure at the base, four building blocks in the middle, dual outcomes at the top.</p>
+    <p class="opp-lead">A stacked systems model — secure tenure at the base, four building blocks in the middle, three outcomes at the top.</p>
 
     <div class="opp-diagram">
       <div class="opp-layer opp-layer-outcomes">
@@ -1063,6 +1064,13 @@
             <div>
               <b>Sustainable Forest Governance</b>
               <span>Biodiversity conservation + climate action</span>
+            </div>
+          </div>
+          <div class="opp-outcome" tabindex="0">
+            <div class="opp-outcome-icon" aria-hidden="true">₹</div>
+            <div>
+              <b>Economic Development and Impact Investments</b>
+              <span>local wealth creation with catalytic capital</span>
             </div>
           </div>
         </div>
@@ -1114,7 +1122,7 @@
       </div>
     </div>
 
-    <div class="opp-footnote">Anchored in secure tenure, the building blocks work synergistically to generate dual outcomes.</div>
+    <div class="opp-footnote">Anchored in secure tenure, the building blocks work synergistically to generate three outcomes.</div>
   </div>
 </section>
 
@@ -1226,7 +1234,7 @@
           </div>
           <div class="inf-photo" tabindex="0">
             <img src="media/logo4.png" alt="Save the Earth Conclave" />
-            <div class="inf-photo-cap">Save the Earth</div>
+            <div class="inf-photo-cap">Inventory Mapping Training</div>
           </div>
           <div class="inf-photo" tabindex="0">
             <img src="media/logo5.png" alt="BarkVisionAI dataset" />
